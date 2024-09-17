@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+#
+# start-alloy --config=<config> <command>
+#
+# This script acts as a process manager, of two children, waiting for either
+# alloy or the chained command to return before exiting.
+#
+#
+# Delegates SIGTERM to the children on signal or child exit
+
+at() {
+    echo "buildpack=pgbouncer_exporter at=$*"
+}
+
+# fifo for communication between children
+wait_channel=$(mktemp -t buildpack-pgbouncer-exporter-wait-XXXXX) || exit 1
+rm "$wait_channel" || exit 1
+mkfifo "$wait_channel" || exit 1
+
+# Graceful shutdown to process group, forced with SIGINT. Can be called multiple
+# times from parent or child signals.
+shutdown() {
+    at "shutdown pgid=$$"
+    rm -f "$wait_channel" # Remove blocking writes for subshells to shutdown
+    trap '' SIGTERM EXIT  # Remove recursive signals
+    kill -TERM -$$        # Graceful TERM for process group
+    wait
+    rm -f "$wait_channel" # Cleanup unblocked writes
+}
+trap shutdown SIGTERM EXIT
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --help)
+            echo "bin/start-pgbouncer-exporter <command>"
+            shift
+            exit 0
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+(
+    at "run pgbouncer-exporter"
+    trap "" SIGTERM # Ignore in subshell so we shutdown via fifo
+    vendor/pgbouncer_exporter/bin/pgbouncer_exporter
+    echo "process=pgbouncer-exporter code=$?" >"$wait_channel"
+) &
+
+(
+    at "run app cmd=\"$*\""
+    trap "" SIGTERM # Ignore in subshell so we shutdown via fifo
+    "$@"
+    echo "process=app code=$?" >"$wait_channel"
+) &
+
+# Wait for either child subshell exit
+read -r exit_status <"$wait_channel"
+shutdown
+at "exit $exit_status"
