@@ -98,7 +98,7 @@ tar zxf "$ARCHIVE" 2>&1|info
 
 log "installing binary pgbouncer_exporter"
 mkdir -p "$BUILD_DIR/vendor/pgbouncer_exporter/bin"
-install -m 0755 "${ARCHIVE%%.tar.gz}" "$BUILD_DIR/vendor/pgbouncer_exporter/bin/pgbouncer_exporter" 2>&1|info
+install -m 0755 "${ARCHIVE%%.tar.gz}/pgbouncer_exporter" "$BUILD_DIR/vendor/pgbouncer_exporter/bin/pgbouncer_exporter" 2>&1|info
 
 log "installing script start-pgbouncer-exporter"
 mkdir -p "$BUILD_DIR/bin"
