@@ -103,3 +103,5 @@ install -m 0755 "${ARCHIVE%%.tar.gz}" "$BUILD_DIR/vendor/pgbouncer_exporter/bin/
 log "installing script start-pgbouncer-exporter"
 mkdir -p "$BUILD_DIR/bin"
 install -m 0755 "$BUILDPACK_ROOT_DIR/bin/start-pgbouncer-exporter" "$BUILD_DIR/bin/start-pgbouncer-exporter" 2>&1|info
+
+ls -l "$BUILD_DIR/vendor/pgbouncer_exporter/bin/"
