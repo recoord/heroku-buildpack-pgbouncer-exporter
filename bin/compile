@@ -103,3 +103,10 @@ install -m 0755 "${ARCHIVE%%.tar.gz}/pgbouncer_exporter" "$BUILD_DIR/vendor/pgbo
 log "installing script start-pgbouncer-exporter"
 mkdir -p "$BUILD_DIR/bin"
 install -m 0755 "$BUILDPACK_ROOT_DIR/bin/start-pgbouncer-exporter" "$BUILD_DIR/bin/start-pgbouncer-exporter" 2>&1|info
+
+log "update pgbouncer config"
+if [ -f vendor/pgbouncer/pgbouncer.ini ]; then
+    sed 's/^ignore_startup_parameters = $/ignore_startup_parameters = extra_float_digits/g' vendor/pgbouncer/pgbouncer.ini
+else
+    log "no pgbouncer config found when install pgbouncer exporter"
+fi
