@@ -46,7 +46,7 @@ done
 (
     at "run pgbouncer-exporter"
     trap "" SIGTERM # Ignore in subshell so we shutdown via fifo
-    vendor/pgbouncer_exporter/bin/pgbouncer_exporter
+    vendor/pgbouncer_exporter/bin/pgbouncer_exporter --pgBouncer.connectionString=\$\{PGBOUNCER_EXPORTER_CONNECTION_STRING\}
     echo "process=pgbouncer-exporter code=$?" >"$wait_channel"
 ) &
 
