@@ -12,6 +12,18 @@ at() {
     echo "buildpack=pgbouncer_exporter at=$*"
 }
 
+# Block until the given file appears or the given timeout is reached.
+# Exit status is 0 iff the file exists.
+wait_socket_file() {
+  at "run pgbouncer-exporter, check pgbouncer socket file"
+  local file="$1"; shift
+  local wait_seconds="${1:-10}"; shift # 10 seconds as default timeout
+
+  until test $((wait_seconds--)) -eq 0 -o -S "$file" ; do sleep 1; done
+
+  test $wait_seconds -ge 0
+}
+
 # fifo for communication between children
 wait_channel=$(mktemp -t buildpack-pgbouncer-exporter-wait-XXXXX) || exit 1
 rm "$wait_channel" || exit 1
@@ -29,8 +41,10 @@ shutdown() {
 }
 trap shutdown SIGTERM EXIT
 
+
 # Defaults
 PGBOUNCER_EXPORTER_CONNECTION_STRING="${PGBOUNCER_EXPORTER_CONNECTION_STRING:-postgres}"
+PGBOUNCER_SOCKET_FILE="/tmp/.s.PGSQL.6000"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -49,7 +63,9 @@ done
 (
     at "run pgbouncer-exporter"
     trap "" SIGTERM # Ignore in subshell so we shutdown via fifo
-    vendor/pgbouncer_exporter/bin/pgbouncer_exporter
+
+    wait_socket_file "${PGBOUNCER_SOCKET_FILE}" \
+       && vendor/pgbouncer_exporter/bin/pgbouncer_exporter
 
     echo "process=pgbouncer-exporter code=$?" >"$wait_channel"
 ) &
