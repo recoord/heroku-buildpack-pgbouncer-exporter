@@ -1,4 +1,4 @@
 #!/bin/sh
 
-echo "PgBouncer exporter"
+echo "pgbouncer_exporter"
 exit 0

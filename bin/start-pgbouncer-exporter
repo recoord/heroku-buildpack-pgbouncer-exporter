@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #
-# start-alloy --config=<config> <command>
+# start-pgbouncer-exporter <command>
 #
 # This script acts as a process manager, of two children, waiting for either
-# alloy or the chained command to return before exiting.
+# pgbouncer-exporter or the chained command to return before exiting.
 #
 #
 # Delegates SIGTERM to the children on signal or child exit
