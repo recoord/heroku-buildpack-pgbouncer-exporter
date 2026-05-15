@@ -1,1 +1,4 @@
-405a9eaf1576d262c933dc3d325444c87adc2aefca3d61cc523ce179f81dc9dd  pgbouncer_exporter-0.9.0.linux-amd64.tar.gz
+987a16715835470a08251945648f5c51043baabfa48a8b18af77b336e548a6d7  pgbouncer_exporter-0.12.0.linux-amd64.tar.gz
+a5ce7e1d9b94afbcf28b1ee0e15a939076f8e86bd687699ad087d5dad44928f0  pgbouncer_exporter-0.12.0.linux-arm64.tar.gz
+93c7a0570a6bc87772db27d371a58075b1a05fcbb5429ff27e378a0272b2b08c  pgbouncer_exporter-0.12.0.darwin-amd64.tar.gz
+469d576023f51af2c6de868c291a03a2d7ebd0cd187c1662911670d07b3e972d  pgbouncer_exporter-0.12.0.darwin-arm64.tar.gz

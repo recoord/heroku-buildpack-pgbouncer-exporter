@@ -2,6 +2,8 @@
 
 This buildpack sets up the [PgBouncer exporter](https://github.com/prometheus-community/pgbouncer_exporter) to expose Metrics of PgBouncer running in the Heroku Dyno alongside application code.
 
+This buildpack installs PgBouncer exporter 0.12.0. PgBouncer exporter 0.11.0 and later require PgBouncer 1.8 or newer; the target runtime uses PgBouncer 1.24.1.
+
 ## Usage
 
 In your Procfile, start pgbouncer_exporter with a configuration then your application.
